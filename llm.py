@@ -40,4 +40,8 @@ def ask_llm(prompt, memory_context=None):
         timeout=300,
     )
     response.raise_for_status()
+<<<<<<< HEAD
     return response.json()["response"].strip()
+=======
+    return response.json()["response"].strip()
+>>>>>>> c296496de3994ccb0092547a3873176ced05c7f9

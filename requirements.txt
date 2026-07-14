@@ -2,4 +2,7 @@ chromadb
 sentence-transformers
 requests
 pyttsx3
+<<<<<<< HEAD
  
+=======
+>>>>>>> c296496de3994ccb0092547a3873176ced05c7f9
