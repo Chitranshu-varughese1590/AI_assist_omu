@@ -54,3 +54,4 @@ Everything here is free and runs locally on your machine. No cloud accounts, no 
 - Add "skills" — e.g. functions Omu can call for weather, opening apps, web search, etc.
 
 Let me know once you've got this running and we can build the next layer.
+Built by Chitranshu
