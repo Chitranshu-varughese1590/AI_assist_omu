@@ -37,7 +37,7 @@ def ask_llm(prompt, memory_context=None):
             "prompt": full_prompt,
             "stream": False,
         },
-        timeout=120,
+        timeout=300,
     )
     response.raise_for_status()
     return response.json()["response"].strip()
