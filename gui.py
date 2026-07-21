@@ -5,6 +5,7 @@ gui.py — a simple desktop window for Omu, built with customtkinter.
 - Your messages appear in white
 - A separate animated "thinking..." label shows below the chat while waiting,
   and disappears cleanly once the reply arrives (no more duplicate text bug).
+- A mic button lets you speak your input instead of typing it.
 """
 
 import customtkinter as ctk
@@ -13,6 +14,7 @@ import threading
 from memory import Memory
 from llm import ask_llm
 from voice import speak
+from listen import listen_for_speech
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -25,7 +27,7 @@ class OmuApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Omu — Your AI Assistant")
+        self.title("Omu Your AI Assistant")
         self.geometry("600x700")
         self.configure(fg_color="#111827")
 
@@ -57,6 +59,9 @@ class OmuApp(ctk.CTk):
 
         self.send_button = ctk.CTkButton(input_frame, text="Send", width=80, command=self.send_message)
         self.send_button.pack(side="right")
+
+        self.mic_button = ctk.CTkButton(input_frame, text="🎤", width=40, command=self.start_voice_input)
+        self.mic_button.pack(side="right", padx=(0, 10))
 
         # Loading animation state
         self._loading = False
@@ -99,6 +104,7 @@ class OmuApp(ctk.CTk):
 
         self.entry.configure(state="disabled")
         self.send_button.configure(state="disabled")
+        self.mic_button.configure(state="disabled")
         self._start_loading()
 
         threading.Thread(target=self._get_reply, args=(user_text,), daemon=True).start()
@@ -118,9 +124,32 @@ class OmuApp(ctk.CTk):
         self._append_chat("Omu", reply, "omu")
         self.entry.configure(state="normal")
         self.send_button.configure(state="normal")
+        self.mic_button.configure(state="normal")
         self.entry.focus()
 
         threading.Thread(target=speak, args=(reply,), daemon=True).start()
+
+    def start_voice_input(self):
+        self.entry.configure(state="disabled")
+        self.send_button.configure(state="disabled")
+        self.mic_button.configure(state="disabled", text="...")
+
+        threading.Thread(target=self._listen_and_fill, daemon=True).start()
+
+    def _listen_and_fill(self):
+        text = listen_for_speech()
+        self.after(0, self._on_voice_result, text)
+
+    def _on_voice_result(self, text):
+        self.entry.configure(state="normal")
+        self.send_button.configure(state="normal")
+        self.mic_button.configure(state="normal", text="🎤")
+
+        if text:
+            self.entry.delete(0, "end")
+            self.entry.insert(0, text)
+            self.send_message()
+        # if text is None (silence/unrecognized), just leave the entry empty for a retry
 
 
 if __name__ == "__main__":
