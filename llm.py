@@ -8,7 +8,7 @@ after install, and stays running via the system tray).
 import requests
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "llama3.1:8b"  # change this if you pulled a different model
+MODEL_NAME = "llama3.2:3b"  # change this if you pulled a different model
 
 
 def ask_llm(prompt, memory_context=None):
@@ -39,9 +39,9 @@ def ask_llm(prompt, memory_context=None):
         },
         timeout=300,
     )
-    response.raise_for_status()
-<<<<<<< HEAD
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        print(f"Ollama error response: {response.text}")
+        raise
     return response.json()["response"].strip()
-=======
-    return response.json()["response"].strip()
->>>>>>> c296496de3994ccb0092547a3873176ced05c7f9
