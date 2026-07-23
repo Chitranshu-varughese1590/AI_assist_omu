@@ -8,7 +8,7 @@ after install, and stays running via the system tray).
 import requests
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "llama3.2:3b"  # change this if you pulled a different model
+MODEL_NAME = "llama3.2:3b"  
 
 
 def ask_llm(prompt, memory_context=None):
