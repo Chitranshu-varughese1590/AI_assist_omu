@@ -2,7 +2,7 @@
 
 A local-first AI assistant that runs entirely on your machine. No cloud API keys, no subscriptions, no sending your conversations anywhere. Omu talks to a local LLM through Ollama, remembers past conversations using a vector database, and comes with both a terminal interface and a polished desktop GUI with voice input/output.
 
-![Omu](https://img.shields.io/badge/status-active-brightgreen) ![Python](https://img.shields.io/badge/python-3.10+-blue) ![License](https://img.shields.io/badge/license-MIT-lightgrey)
+![Omu](https://img.shields.io/badge/status-active-brightgreen) ![Python](https://img.shields.io/badge/python-3.10+-blue)
 
 ---
 
