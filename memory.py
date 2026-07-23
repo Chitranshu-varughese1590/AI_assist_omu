@@ -1,11 +1,4 @@
-"""
-memory.py — Omu's long-term memory.
 
-Stores every user message + Omu's reply in a local vector database (ChromaDB)
-so that future queries can retrieve relevant past context.
-
-Everything here runs 100% locally and free — no cloud account needed.
-"""
 
 import chromadb
 from sentence_transformers import SentenceTransformer
