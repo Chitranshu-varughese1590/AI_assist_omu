@@ -24,6 +24,7 @@ from memory import Memory
 from llm import ask_llm
 from voice import speak
 from listen import listen_for_speech
+from chess_gui import ChessFrame
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -50,7 +51,7 @@ class OmuApp(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Omu — Your AI Assistant")
+        self.title("OMU  Your AI Assistant")
         self.geometry("640x760")
         self.minsize(480, 560)
         self.configure(fg_color=BG_COLOR)
@@ -62,12 +63,13 @@ class OmuApp(ctk.CTk):
         self._loading = False
         self._loading_dots = 0
         self._thinking_bubble = None
+        self.chess_window = None
 
         self._build_header()
         self._build_chat_area()
         self._build_input_row()
 
-        self._add_bubble("Omu", "Hi! I'm Omu. Ask me anything.", is_user=False)
+        self._add_bubble("Omu", "Hi! I'm OMU . Ask me anything.", is_user=False)
 
     # ------------------------------------------------------------------
     # Layout
@@ -125,7 +127,7 @@ class OmuApp(ctk.CTk):
         input_frame.pack(padx=20, pady=(0, 20), fill="x")
 
         self.entry = ctk.CTkEntry(
-            input_frame, placeholder_text="Type a message to Omu...",
+            input_frame, placeholder_text="Type a message to OMU...",
             font=("Segoe UI", 13), height=40,
         )
         self.entry.pack(side="left", fill="x", expand=True, padx=(0, 10))
@@ -189,7 +191,22 @@ class OmuApp(ctk.CTk):
     def clear_chat(self):
         for child in self.chat_scroll.winfo_children():
             child.destroy()
-        self._add_bubble("Omu", "Chat cleared. What's next?", is_user=False)
+        self._add_bubble("OMU", "Chat cleared. What's next?", is_user=False)
+
+    def open_chess_window(self):
+        # If a chess window is already open, just bring it to front instead of
+        # spawning a second one.
+        if self.chess_window is not None and self.chess_window.winfo_exists():
+            self.chess_window.lift()
+            return
+
+        self.chess_window = ctk.CTkToplevel(self)
+        self.chess_window.title("Chess vs Omu")
+        self.chess_window.geometry("520x620")
+        self.chess_window.configure(fg_color=BG_COLOR)
+
+        chess_frame = ChessFrame(self.chess_window, fg_color=PANEL_COLOR)
+        chess_frame.pack(padx=20, pady=20, fill="both", expand=True)
 
     # ------------------------------------------------------------------
     # Status / mute helpers
@@ -210,7 +227,7 @@ class OmuApp(ctk.CTk):
         self._loading_dots = 0
         self._set_status("thinking...", STATUS_BUSY)
         self._thinking_bubble, self._thinking_label = self._add_bubble(
-            "Omu", "thinking", is_user=False, is_thinking=True
+            "OMU", "thinking", is_user=False, is_thinking=True
         )
         self._animate_loading()
 
@@ -239,6 +256,11 @@ class OmuApp(ctk.CTk):
 
         self.entry.delete(0, "end")
         self._add_bubble("You", user_text, is_user=True)
+
+        if user_text.lower() == "chess":
+            self._add_bubble("Omu", "Opening the chess board...", is_user=False)
+            self.open_chess_window()
+            return
 
         self.entry.configure(state="disabled")
         self.send_button.configure(state="disabled")
@@ -300,7 +322,7 @@ class OmuApp(ctk.CTk):
             self.entry.delete(0, "end")
             self.entry.insert(0, text)
             self.send_message()
-        # if text is None (silence/unrecognized), just leave the entry empty for a retry
+        
 
 
 if __name__ == "__main__":
